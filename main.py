@@ -16,49 +16,94 @@ Inventory_list = {
     "Rice": {"Category": "Pantry", "Quantity": 100, "Price": "$1.20 per lb"}
     }
 
-# Partr 2: Function to search and update the inventory
-item = input("Enter the item name: ")
-if item in Inventory_list:
-    print(item,"is available in the inventory.", Inventory_list[item]['Category'],', at:', Inventory_list[item]['Price'],',', Inventory_list[item]['Quantity'], 'at hand')
-    while True:
-        operator = input("Do you want to update the quantity(1), price(2), delete(0), exit(ENTER)? : ")
-        if operator =='1':
-            try:
-                new_quantity = int(input('New quantity: '))
-                Inventory_list[item]['Quantity'] = new_quantity
-            except ValueError:
-                print("Invalid input. Please enter a valid integer for quantity.")
-        elif operator == '2':
-            new_price = input('New price: ')
-            Inventory_list[item]['Price'] = new_price
-        elif operator == '0':
-            del Inventory_list[item]
-            print(item, 'has been removed from the inventory.')
-            break
-        elif operator == '':
-            break
-        else:            
-            print("Invalid input. Please enter 1, 2, 0, or press ENTER to exit.")
-else:
-    print(item,"is not available in the inventory. Would you like to add it? (yes/no): ")
-    add_item = input()
-    if add_item == 'yes':
-        category = input("Enter the category: ")
-        try:
-            quantity = int(input("Enter the quantity: "))
-        except ValueError:
-            print("Invalid input. Please enter a valid number for quantity.")
-            quantity = 0
-        price = input("Enter the price: ")
-        Inventory_list[item] = {'Category': category, 'Quantity': quantity, 'Price': price}
-        print(item, 'has been added to the inventory, Current inventory: ')
-        for product, data in Inventory_list.items():
-            print(product, ':', data)
+# Part 2: Functions to search, print and update the inventory
+def print_inventory():
+    print("Current inventory:")
+    for product, data in Inventory_list.items():
+        print(product,':', data)   
 
+def search_inventory(item):
+    if item in Inventory_list:
+        print(item,"is available in the inventory.", Inventory_list[item]['Category'],', at:', Inventory_list[item]['Price'],',', Inventory_list[item]['Quantity'], 'at hand')
+        return input("Do you want to update the quantity(1), price(2), category(3), DELETE(D), exit(anything else)? : ")
     else:
-       print ("Item not added to the inventory, current inventory: ")
-       for product, data in Inventory_list.items():
-            print(product, ':', data)
+        print(item,"is not available in the inventory.")
+        return input("Do you want to add it? (yes/no): ")
+        
+def new_Category(item):
+    new_Category = input("Enter the new category for  "+ item + ": ")
+    Inventory_list[item]['Category'] = new_Category
+    print(item, 'category has been updated')
+    print_item(item)
+
+def new_Price(item):
+    new_Price = input("Enter the price for : "+ item +': ')
+    Inventory_list[item]['Price'] = new_Price
+    print(item, 'price has been updated')
+    print_item(item)
+
+def new_Quantity(item):  
+    #Error handling for quantity input   
+    try:
+        new_quantity = int(input('New quantity: '))
+        Inventory_list[item]['Quantity'] = new_quantity
+        print(item, 'quantity has been updated')
+        print_item(item)
+    except ValueError:
+                print('Invalid input.',item,'has been added with quantity 0')
+
+def delete_item(item):
+    del Inventory_list[item]
+    print(item, 'has been removed from the inventory.') 
+
+def add_item(item):
+    Inventory_list[item] = {}
+    new_Category(item)
+    new_Price(item)
+    new_Quantity(item)
+    print(item, 'has been added to the inventory, Current inventory: ')
+    print_item(item)
+
+def print_item(item):
+    print(item, ':', Inventory_list[item])
+    
+
+
+# Part 3: Main program 
+
+initial_menu = input(" Do you want to view the current inventory? (ENTER), or search specific item? (S) : ")
+      
+if initial_menu == 'S':    
+     item = input("Enter the item name: ")
+     operator = search_inventory(item)
+     if operator =='1':
+        new_Quantity(item)
+
+     elif operator == '2':
+        new_Price(item)
+
+     elif operator == '3':
+        new_Category(item)
+
+     elif operator == 'D':
+        delete_item(item)
+        print_inventory()
+
+     elif operator == 'yes':
+        add_item(item)
+     else:   
+        print("Exiting the program. Current inventory: ")
+        print_inventory()   
+else:
+     print_inventory() 
+    
+
+
+
+
+
+
+
 
 
     
